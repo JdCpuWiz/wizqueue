@@ -13,6 +13,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy (required when behind nginx)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
   origin: true, // Allow all origins in development

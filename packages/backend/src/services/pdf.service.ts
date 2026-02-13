@@ -1,6 +1,29 @@
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { createCanvas } from 'canvas';
+import { createCanvas, Canvas } from 'canvas';
 import fs from 'fs/promises';
+
+// Configure PDF.js to work with node-canvas
+class NodeCanvasFactory {
+  create(width: number, height: number) {
+    const canvas = createCanvas(width, height);
+    return {
+      canvas,
+      context: canvas.getContext('2d'),
+    };
+  }
+
+  reset(canvasAndContext: any, width: number, height: number) {
+    canvasAndContext.canvas.width = width;
+    canvasAndContext.canvas.height = height;
+  }
+
+  destroy(canvasAndContext: any) {
+    canvasAndContext.canvas.width = 0;
+    canvasAndContext.canvas.height = 0;
+    canvasAndContext.canvas = null;
+    canvasAndContext.context = null;
+  }
+}
 
 export class PdfService {
   /**
@@ -15,10 +38,11 @@ export class PdfService {
       // Read PDF file
       const data = new Uint8Array(await fs.readFile(pdfPath));
 
-      // Load PDF document
+      // Load PDF document with canvas factory
       const loadingTask = pdfjsLib.getDocument({
         data,
         verbosity: 0,
+        canvasFactory: new NodeCanvasFactory() as any,
       });
       const pdfDocument = await loadingTask.promise;
 
@@ -30,19 +54,25 @@ export class PdfService {
         const scale = 2.0;
         const viewport = page.getViewport({ scale });
 
-        // Create canvas
-        const canvas = createCanvas(viewport.width, viewport.height);
-        const context = canvas.getContext('2d');
+        // Create canvas using factory
+        const canvasFactory = new NodeCanvasFactory();
+        const canvasAndContext = canvasFactory.create(
+          Math.floor(viewport.width),
+          Math.floor(viewport.height)
+        );
 
         // Render PDF page to canvas
         await page.render({
-          canvasContext: context as any,
+          canvasContext: canvasAndContext.context,
           viewport: viewport,
         }).promise;
 
         // Convert canvas to base64 PNG
-        const base64Image = canvas.toBuffer('image/png').toString('base64');
+        const base64Image = canvasAndContext.canvas.toBuffer('image/png').toString('base64');
         images.push(base64Image);
+
+        // Clean up
+        canvasFactory.destroy(canvasAndContext);
       }
 
       return images;
