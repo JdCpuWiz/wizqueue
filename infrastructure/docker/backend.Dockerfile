@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Copy workspace root and shared package
 COPY package*.json ./
+COPY tsconfig.base.json ./
 COPY packages/shared ./packages/shared
 COPY packages/backend ./packages/backend
 
@@ -29,6 +30,7 @@ WORKDIR /app
 
 # Copy workspace root
 COPY package*.json ./
+COPY tsconfig.base.json ./
 
 # Copy built packages
 COPY --from=builder /app/packages/shared/package.json ./packages/shared/
