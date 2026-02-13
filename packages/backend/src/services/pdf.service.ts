@@ -1,5 +1,5 @@
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { createCanvas, Canvas } from 'canvas';
+import { createCanvas } from 'canvas';
 import fs from 'fs/promises';
 
 // Configure PDF.js to work with node-canvas
@@ -38,12 +38,11 @@ export class PdfService {
       // Read PDF file
       const data = new Uint8Array(await fs.readFile(pdfPath));
 
-      // Load PDF document with canvas factory
+      // Load PDF document
       const loadingTask = pdfjsLib.getDocument({
         data,
         verbosity: 0,
-        canvasFactory: new NodeCanvasFactory() as any,
-      });
+      } as any);
       const pdfDocument = await loadingTask.promise;
 
       // Process each page
