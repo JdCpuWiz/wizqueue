@@ -10,14 +10,14 @@ function App() {
     <Layout>
       <div className="space-y-6">
         {/* Tab Navigation */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-1 inline-flex">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 p-1 inline-flex">
           <button
             onClick={() => setActiveTab('queue')}
             className={`
               px-4 py-2 rounded-md font-medium transition-colors
               ${activeTab === 'queue'
                 ? 'bg-primary-600 text-white'
-                : 'text-gray-600 hover:text-gray-900'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
               }
             `}
           >
@@ -29,7 +29,7 @@ function App() {
               px-4 py-2 rounded-md font-medium transition-colors
               ${activeTab === 'upload'
                 ? 'bg-primary-600 text-white'
-                : 'text-gray-600 hover:text-gray-900'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
               }
             `}
           >

@@ -9,7 +9,12 @@ const ollamaService = new OllamaService();
 export class UploadController {
   async uploadInvoice(req: Request, res: Response<ApiResponse>, next: NextFunction): Promise<void> {
     try {
+      console.log('📤 Upload request received');
+      console.log('  Content-Type:', req.headers['content-type']);
+      console.log('  File:', req.file ? `${req.file.filename} (${req.file.size} bytes)` : 'none');
+
       if (!req.file) {
+        console.error('❌ No file in request');
         res.status(400).json({
           success: false,
           error: 'No file uploaded',
@@ -18,11 +23,14 @@ export class UploadController {
       }
 
       const { filename, path: filePath } = req.file;
+      console.log(`📝 Creating invoice record for: ${filename}`);
 
       // Create invoice record
       const invoice = await InvoiceModel.create(filename, filePath);
+      console.log(`✅ Invoice created with ID: ${invoice.id}`);
 
       // Start processing in background
+      console.log(`🚀 Starting background processing for invoice ${invoice.id}`);
       this.processInvoiceAsync(invoice.id, filePath);
 
       res.status(201).json({
@@ -34,6 +42,7 @@ export class UploadController {
         },
       });
     } catch (error) {
+      console.error('❌ Upload error:', error);
       // Clean up uploaded file on error
       if (req.file) {
         await fs.unlink(req.file.path).catch(() => {});

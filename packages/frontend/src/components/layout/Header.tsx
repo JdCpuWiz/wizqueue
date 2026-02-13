@@ -1,12 +1,13 @@
 import React from 'react';
+import { DarkModeToggle } from '../common/DarkModeToggle';
 
 export const Header: React.FC = () => {
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-primary-600 dark:bg-primary-500 rounded-lg flex items-center justify-center">
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
@@ -22,10 +23,11 @@ export const Header: React.FC = () => {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">WizQueue</h1>
-              <p className="text-sm text-gray-500">3D Printing Queue Manager</p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">WizQueue</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">3D Printing Queue Manager</p>
             </div>
           </div>
+          <DarkModeToggle />
         </div>
       </div>
     </header>
