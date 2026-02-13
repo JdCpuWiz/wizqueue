@@ -1,0 +1,26 @@
+{
+  "name": "wizqueue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "3D Printing Queue Generator - Self-hosted web application for managing 3D printing queues",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "build:backend": "npm run build -w backend",
+    "build:frontend": "npm run build -w frontend",
+    "build": "npm run build:backend && npm run build:frontend",
+    "migrate": "node packages/backend/migrations/run-migrations.js",
+    "clean": "npm run clean -ws"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
