@@ -1,4 +1,4 @@
-import { pdf } from 'pdf-to-img';
+import { fromPath } from 'pdf2pic';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -11,12 +11,28 @@ export class PdfService {
   async convertPdfToImages(pdfPath: string): Promise<string[]> {
     try {
       const images: string[] = [];
-      const document = await pdf(pdfPath, { scale: 2.0 });
 
-      for await (const image of document) {
-        // Convert buffer to base64
-        const base64Image = image.toString('base64');
-        images.push(base64Image);
+      // Configure pdf2pic
+      const options = {
+        density: 200,           // DPI
+        saveFilename: 'temp',
+        savePath: '/tmp',
+        format: 'png',
+        width: 2000,
+        height: 2000,
+      };
+
+      const convert = fromPath(pdfPath, options);
+
+      // Get page count first
+      const pageCount = await this.getPageCount(pdfPath);
+
+      // Convert each page
+      for (let page = 1; page <= pageCount; page++) {
+        const result = await convert(page, { responseType: 'base64' });
+        if (result.base64) {
+          images.push(result.base64);
+        }
       }
 
       return images;
@@ -48,17 +64,16 @@ export class PdfService {
    */
   async getPageCount(pdfPath: string): Promise<number> {
     try {
-      let pageCount = 0;
-      const document = await pdf(pdfPath);
+      const buffer = await fs.readFile(pdfPath);
+      const pdfContent = buffer.toString('binary');
 
-      for await (const _ of document) {
-        pageCount++;
-      }
-
-      return pageCount;
+      // Count /Type /Page occurrences (simple method)
+      const matches = pdfContent.match(/\/Type[\s]*\/Page[^s]/g);
+      return matches ? matches.length : 1;
     } catch (error) {
       console.error('Error getting page count:', error);
-      return 0;
+      // Default to 1 page if we can't determine
+      return 1;
     }
   }
 }

@@ -1,5 +1,8 @@
 FROM node:20-alpine AS builder
 
+# Install GraphicsMagick and Ghostscript for PDF processing
+RUN apk add --no-cache graphicsmagick ghostscript
+
 WORKDIR /app
 
 # Copy workspace root and shared package
@@ -18,6 +21,9 @@ RUN npm run build -w @wizqueue/backend
 
 # Production image
 FROM node:20-alpine
+
+# Install GraphicsMagick and Ghostscript for PDF processing
+RUN apk add --no-cache graphicsmagick ghostscript
 
 WORKDIR /app
 

@@ -10,10 +10,26 @@ Before you begin, ensure you have the following installed:
 - **npm** (>= 9.0.0) - Comes with Node.js
 - **PostgreSQL** (>= 14) - [Download](https://www.postgresql.org/download/)
 - **Ollama** - [Download](https://ollama.ai/)
+- **GraphicsMagick** and **Ghostscript** - For PDF processing (see [DEPENDENCIES.md](DEPENDENCIES.md))
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Install System Dependencies
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install -y graphicsmagick ghostscript
+```
+
+**macOS:**
+```bash
+brew install graphicsmagick ghostscript
+```
+
+See [DEPENDENCIES.md](DEPENDENCIES.md) for more details.
+
+### 2. Install Node Dependencies
 
 ```bash
 npm install
@@ -21,7 +37,7 @@ npm install
 
 This will install dependencies for all packages in the monorepo (backend, frontend, and shared).
 
-### 2. Set Up Database
+### 3. Set Up Database
 
 Create a PostgreSQL database and user:
 
@@ -31,7 +47,7 @@ CREATE USER wizqueue_user WITH PASSWORD 'your_password';
 GRANT ALL PRIVILEGES ON DATABASE wizqueue TO wizqueue_user;
 ```
 
-### 3. Configure Environment
+### 4. Configure Environment
 
 Copy the example environment file:
 
@@ -63,7 +79,7 @@ MAX_FILE_SIZE=10485760
 VITE_API_URL=http://localhost:3000/api
 ```
 
-### 4. Run Database Migrations
+### 5. Run Database Migrations
 
 ```bash
 npm run migrate
@@ -71,7 +87,7 @@ npm run migrate
 
 This will create the necessary tables (`invoices`, `queue_items`, and `migrations`).
 
-### 5. Set Up Ollama
+### 6. Set Up Ollama
 
 Start Ollama and pull the vision model:
 
@@ -89,7 +105,7 @@ Available models:
 - `llama3.2-vision:latest` - Better accuracy, slower
 - `llava:13b` - Highest quality, requires more RAM
 
-### 6. Start Development Servers
+### 7. Start Development Servers
 
 Start both backend and frontend in development mode:
 
@@ -107,7 +123,7 @@ npm run dev:backend
 npm run dev:frontend
 ```
 
-### 7. Access the Application
+### 8. Access the Application
 
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:3000
