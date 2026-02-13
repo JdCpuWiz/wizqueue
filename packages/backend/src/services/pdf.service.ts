@@ -1,4 +1,5 @@
-import { fromPath } from 'pdf2pic';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { createCanvas } from 'canvas';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -12,27 +13,37 @@ export class PdfService {
     try {
       const images: string[] = [];
 
-      // Configure pdf2pic
-      const options = {
-        density: 200,           // DPI
-        saveFilename: 'temp',
-        savePath: '/tmp',
-        format: 'png',
-        width: 2000,
-        height: 2000,
-      };
+      // Read PDF file
+      const data = new Uint8Array(await fs.readFile(pdfPath));
 
-      const convert = fromPath(pdfPath, options);
+      // Load PDF document
+      const loadingTask = pdfjsLib.getDocument({
+        data,
+        verbosity: 0,
+      });
+      const pdfDocument = await loadingTask.promise;
 
-      // Get page count first
-      const pageCount = await this.getPageCount(pdfPath);
+      // Process each page
+      for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
+        const page = await pdfDocument.getPage(pageNum);
 
-      // Convert each page
-      for (let page = 1; page <= pageCount; page++) {
-        const result = await convert(page, { responseType: 'base64' });
-        if (result.base64) {
-          images.push(result.base64);
-        }
+        // Set scale for good quality (2x = 144 DPI)
+        const scale = 2.0;
+        const viewport = page.getViewport({ scale });
+
+        // Create canvas
+        const canvas = createCanvas(viewport.width, viewport.height);
+        const context = canvas.getContext('2d');
+
+        // Render PDF page to canvas
+        await page.render({
+          canvasContext: context as any,
+          viewport: viewport,
+        }).promise;
+
+        // Convert canvas to base64 PNG
+        const base64Image = canvas.toBuffer('image/png').toString('base64');
+        images.push(base64Image);
       }
 
       return images;
@@ -64,15 +75,15 @@ export class PdfService {
    */
   async getPageCount(pdfPath: string): Promise<number> {
     try {
-      const buffer = await fs.readFile(pdfPath);
-      const pdfContent = buffer.toString('binary');
-
-      // Count /Type /Page occurrences (simple method)
-      const matches = pdfContent.match(/\/Type[\s]*\/Page[^s]/g);
-      return matches ? matches.length : 1;
+      const data = new Uint8Array(await fs.readFile(pdfPath));
+      const loadingTask = pdfjsLib.getDocument({
+        data,
+        verbosity: 0,
+      });
+      const pdfDocument = await loadingTask.promise;
+      return pdfDocument.numPages;
     } catch (error) {
       console.error('Error getting page count:', error);
-      // Default to 1 page if we can't determine
       return 1;
     }
   }

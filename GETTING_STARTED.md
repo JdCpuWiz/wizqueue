@@ -19,12 +19,12 @@ Before you begin, ensure you have the following installed:
 **Ubuntu/Debian:**
 ```bash
 sudo apt update
-sudo apt install -y graphicsmagick ghostscript
+sudo apt install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 ```
 
 **macOS:**
 ```bash
-brew install graphicsmagick ghostscript
+brew install pkg-config cairo pango libpng jpeg giflib librsvg pixman
 ```
 
 See [DEPENDENCIES.md](DEPENDENCIES.md) for more details.

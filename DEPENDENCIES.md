@@ -6,13 +6,13 @@ WizQueue requires some system-level dependencies for PDF processing.
 
 ```bash
 sudo apt update
-sudo apt install -y graphicsmagick ghostscript
+sudo apt install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 ```
 
 ## macOS
 
 ```bash
-brew install graphicsmagick ghostscript
+brew install pkg-config cairo pango libpng jpeg giflib librsvg pixman
 ```
 
 ## Docker
@@ -21,17 +21,17 @@ The system dependencies are already included in the Docker images. No additional
 
 ## Why These Dependencies?
 
-- **GraphicsMagick** - Image processing library used by pdf2pic to convert PDF pages to images
-- **Ghostscript** - Renders PDF files for conversion
+These packages are required for the `canvas` library, which is used with PDF.js to render PDF pages:
+- **cairo** - 2D graphics library
+- **pango** - Text rendering
+- **libjpeg/libpng/libgif** - Image format support
 
 ## Verifying Installation
 
 ```bash
-# Check GraphicsMagick
-gm version
-
-# Check Ghostscript
-gs --version
+# Check if canvas dependencies are installed
+pkg-config --exists cairo && echo "Cairo: OK"
+pkg-config --exists pango && echo "Pango: OK"
 ```
 
 ## Alternative: Using Docker Only
