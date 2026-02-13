@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const { Client } = require('pg');
-require('dotenv').config({ path: path.join(__dirname, '../../../.env') });
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import pg from 'pg';
+import dotenv from 'dotenv';
+
+const { Client } = pg;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables
+dotenv.config({ path: path.join(__dirname, '../../../.env') });
 
 async function runMigrations() {
   const client = new Client({
