@@ -1,0 +1,30 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build Backend Docker Image
+      run: |
+        docker build -f infrastructure/docker/backend.Dockerfile -t wizqueue-backend .
+
+    - name: Build Frontend Docker Image
+      run: |
+        docker build -f infrastructure/docker/frontend.Dockerfile \
+          --build-arg VITE_API_URL=/api \
+          -t wizqueue-frontend .
+
+    - name: Test Backend Health
+      run: |
+        docker run -d --name test-backend wizqueue-backend
+        sleep 5
+        docker logs test-backend
