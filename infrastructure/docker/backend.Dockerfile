@@ -45,15 +45,15 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.base.json ./
 
-# Copy built packages
+# Copy built packages and node_modules from builder
 COPY --from=builder /app/packages/shared/package.json ./packages/shared/
 COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/packages/backend/package.json ./packages/backend/
 COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
 COPY --from=builder /app/packages/backend/migrations ./packages/backend/migrations
-
-# Install production dependencies only
-RUN npm install --workspace=@wizqueue/shared --workspace=@wizqueue/backend --omit=dev
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=builder /app/packages/backend/node_modules ./packages/backend/node_modules
 
 # Create uploads directory
 RUN mkdir -p /app/uploads
