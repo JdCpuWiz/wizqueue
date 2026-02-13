@@ -37,6 +37,7 @@ uploads/
 *.pdf
 
 # Docker
+compose.override.yaml
 docker-compose.override.yml
 
 # Testing

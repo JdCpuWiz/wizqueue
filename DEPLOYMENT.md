@@ -179,7 +179,7 @@ sudo apt install certbot python3-certbot-nginx -y
 docker-compose down
 ```
 
-3. **Update docker-compose.yml to expose ports 443:**
+3. **Update compose.yaml to expose ports 443:**
 ```yaml
 frontend:
   ports:
@@ -276,7 +276,7 @@ docker stats
 
 # Restart Ollama with memory limit
 docker-compose down
-# Edit docker-compose.yml to add memory limits
+# Edit compose.yaml to add memory limits
 docker-compose up -d
 ```
 

@@ -228,7 +228,7 @@ The WizQueue application is a full-stack TypeScript monorepo with a React fronte
   - SPA routing support
 
 #### Orchestration (1 file)
-- **docker-compose.yml** - Complete stack definition
+- **compose.yaml** - Complete stack definition
   - Backend service
   - Frontend service
   - Ollama service
