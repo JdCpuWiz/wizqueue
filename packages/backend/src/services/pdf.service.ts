@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { convert } from 'pdf-poppler';
+import { convert, info } from 'pdf-poppler';
 
 export class PdfService {
   /**
@@ -80,7 +80,6 @@ export class PdfService {
   async getPageCount(pdfPath: string): Promise<number> {
     try {
       // Use pdf-poppler to get info
-      const { info } = await import('pdf-poppler');
       const pdfInfo = await info(pdfPath);
       return parseInt(pdfInfo.pages) || 1;
     } catch (error) {
