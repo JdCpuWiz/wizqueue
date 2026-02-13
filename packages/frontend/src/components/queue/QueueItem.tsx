@@ -30,7 +30,7 @@ export const QueueItem: React.FC<QueueItemProps> = ({ item }) => {
 
   const statusColors = {
     pending: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-    printing: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+    printing: 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200',
     completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   };
@@ -113,7 +113,7 @@ export const QueueItem: React.FC<QueueItemProps> = ({ item }) => {
                 </select>
 
                 {item.priority > 0 && (
-                  <span className="text-sm text-orange-600 dark:text-orange-400 font-medium">
+                  <span className="text-sm text-primary-600 dark:text-primary-400 font-medium">
                     Priority: {item.priority}
                   </span>
                 )}

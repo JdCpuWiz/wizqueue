@@ -223,11 +223,11 @@ export const UploadZone: React.FC = () => {
         </p>
       </div>
 
-      <div className="mt-6 p-4 bg-orange-50 dark:bg-orange-950 rounded-lg border border-orange-200 dark:border-orange-800">
-        <h3 className="text-base font-semibold text-orange-900 dark:text-orange-200 mb-2">
+      <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700">
+        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">
           How it works:
         </h3>
-        <ol className="text-base text-orange-800 dark:text-orange-300 space-y-1 list-decimal list-inside">
+        <ol className="text-base text-gray-700 dark:text-gray-300 space-y-1 list-decimal list-inside">
           <li>Upload your PDF invoice</li>
           <li>AI automatically extracts product information</li>
           <li>Review and confirm extracted items</li>

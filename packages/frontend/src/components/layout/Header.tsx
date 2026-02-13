@@ -10,7 +10,7 @@ export const Header: React.FC = () => {
             <img
               src="/wiz3d_prints_logo.png"
               alt="Wiz3D Prints Logo"
-              className="h-12 w-auto object-contain"
+              className="h-16 w-auto object-contain"
             />
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">WizQueue</h1>
