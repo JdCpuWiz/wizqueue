@@ -1,6 +1,28 @@
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { createCanvas } from 'canvas';
+import { createCanvas, Canvas } from 'canvas';
 import fs from 'fs/promises';
+
+// Canvas factory for node-canvas integration with PDF.js
+class NodeCanvasFactory {
+  create(width: number, height: number) {
+    const canvas = createCanvas(width, height);
+    const context = canvas.getContext('2d');
+    return {
+      canvas,
+      context,
+    };
+  }
+
+  reset(canvasAndContext: { canvas: Canvas; context: any }, width: number, height: number) {
+    canvasAndContext.canvas.width = width;
+    canvasAndContext.canvas.height = height;
+  }
+
+  destroy(canvasAndContext: { canvas: Canvas; context: any }) {
+    canvasAndContext.canvas.width = 0;
+    canvasAndContext.canvas.height = 0;
+  }
+}
 
 export class PdfService {
   /**
@@ -15,10 +37,14 @@ export class PdfService {
       // Read PDF file
       const data = new Uint8Array(await fs.readFile(pdfPath));
 
-      // Load PDF document
+      // Create canvas factory for PDF.js
+      const canvasFactory = new NodeCanvasFactory();
+
+      // Load PDF document with canvas factory
       const loadingTask = pdfjsLib.getDocument({
         data,
         verbosity: 0,
+        canvasFactory: canvasFactory as any,
       } as any);
       const pdfDocument = await loadingTask.promise;
 
@@ -30,26 +56,26 @@ export class PdfService {
         const scale = 2.0;
         const viewport = page.getViewport({ scale });
 
-        // Create canvas
-        const canvas = createCanvas(
+        // Create canvas using factory
+        const canvasAndContext = canvasFactory.create(
           Math.floor(viewport.width),
           Math.floor(viewport.height)
         );
-        const context = canvas.getContext('2d');
 
-        // Render PDF page to canvas with transform
+        // Render PDF page to canvas
         const renderContext = {
-          canvasContext: context,
+          canvasContext: canvasAndContext.context,
           viewport: viewport,
-          transform: null,
-          background: 'white',
         };
 
         await page.render(renderContext as any).promise;
 
         // Convert canvas to base64 PNG
-        const base64Image = canvas.toBuffer('image/png').toString('base64');
+        const base64Image = canvasAndContext.canvas.toBuffer('image/png').toString('base64');
         images.push(base64Image);
+
+        // Clean up
+        canvasFactory.destroy(canvasAndContext);
       }
 
       return images;
